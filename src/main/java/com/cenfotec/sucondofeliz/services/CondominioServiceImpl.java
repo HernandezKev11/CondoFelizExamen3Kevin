@@ -46,7 +46,9 @@ public class CondominioServiceImpl implements CondominioService{
         if (record.isPresent()) {
             if(record.get().getEstado().equals("Activo")){
                 Condominio data = record.get();
-                if(data.getCuotaCondominial() != condo.getCuotaCondominial()){
+                if(data.getCuotaCondominial().equals( condo.getCuotaCondominial())){
+
+                }else{
                     data.setCuotaCondominial(condo.getCuotaCondominial());
                     Cuota cuotaNueva = new Cuota();
                     cuotaNueva.setCuotaCondominial(condo.getCuotaCondominial());

@@ -6,6 +6,7 @@ import com.cenfotec.sucondofeliz.domain.Condominio;
 import com.cenfotec.sucondofeliz.services.AmenidadService;
 import com.cenfotec.sucondofeliz.services.CondominioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,6 +19,10 @@ public class AmenidadController {
     @Autowired
     private AmenidadService ameService;
 
+    @Autowired
+    private CondominioService condoService;
+
+
     @GetMapping(value = "/{id}")
     public List getAmenidadesById(@PathVariable long id){
         Condominio condo = new Condominio();
@@ -29,6 +34,14 @@ public class AmenidadController {
     @PostMapping(value = "/{id}")
     public Amenidad create(@PathVariable long id,@RequestBody Amenidad amenidad){
         amenidad.setIdCondominio(id);
-        return ameService.save(amenidad).get();
+        Optional<Condominio> result = condoService.findById(id);
+        if(result.isPresent()){
+            if(result.get().getEstado().equals("Activo")){
+                return ameService.save(amenidad).get();
+            }
+        }
+        Amenidad ame = new Amenidad();
+        ame.setTipoAmenidad("El condominio esta desactivado");
+        return ame;
     }
 }
